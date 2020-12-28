@@ -41,7 +41,7 @@ public class UserController {
  }
  
  @GetMapping("/userdetails/{id}")
- public UserModel get(@PathVariable int id) {
+ public UserModel get(@PathVariable String id) {
   return employeeService.get(id);
  }
  

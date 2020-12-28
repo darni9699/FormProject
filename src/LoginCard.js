@@ -1,56 +1,64 @@
 import React from "react";
-import ReactDOM from "react-dom";
 import Card from '@material-ui/core/Card';
 import axios from 'axios';
-import {Redirect} from "react-router-dom";
+import {withRouter} from "react-router-dom";
 import CardActions from '@material-ui/core/CardActions';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 import {TextField,Typography,Grid,Button} from "@material-ui/core";
 const ID_URL='http://localhost:8080/api/userdetails/id/';
 const PWD_URL='http://localhost:8080/api/userdetails/pass/';
-function LoginCard(){
-  
- 
-  const [userID,setUserID]=React.useState('');
-  const [password,setPassword]=React.useState('');
-  const [authId,setAuthId]=React.useState(false);
-  const [authPwd,setAuthPwd]=React.useState(false);
- let IdHandler=(e)=>
+axios.default.timeout=5000;
+class LoginCard extends React.Component{
+ constructor(props)
+ {
+   super(props);
+   this.state={
+    userID:'',
+    password:'',
+    authID:false,
+    authPwd:false
+   }
+   this.IdHandler=this.IdHandler.bind(this);
+   this.passwordHandler=this.passwordHandler.bind(this);
+   this.handleSubmit=this.handleSubmit.bind(this);
+   this.handleResponse=this.handleResponse.bind(this);
+ }
+
+ IdHandler=(e)=>
   {
-    setUserID(e.target.value);
+    this.setState({userID:e.target.value});
   }
-  let passwordHandler=(event)=>
+  passwordHandler=(event)=>
   {
-    setPassword(event.target.value);
+    this.setState({password:event.target.value});
   }
-  let handleResponse=async ()=>
+  handleResponse= ()=>
   {
-   if(authId &&authPwd)
+   if(this.state.authId &&this.state.authPwd)
    {
-     alert('Hi');
- return <Redirect to={`/details/${userID}`}/>;
+this.props.history.push(`/details/${this.state.userID}`)
    }
    else
    {
-     return <Redirect  to="/"/>;
+    this.props.history.push("/");
    }
   }
- let handleSubmit= async (e)=>
+ handleSubmit= async (e)=>
   {
-    let user={userID:userID,
-      password:password}
+    let user={userID:this.state.userID,
+      password:this.state.password}
     
     axios.all([
       axios.get(ID_URL+user.userID),
       axios.get(PWD_URL+user.password)
     ])
     .then(response=>{
-        setAuthId(response[0].data);
-        setAuthPwd(response[1].data);
-      handleResponse();
-      console.log(authId);
-      
+        this.setState({authId:response[0].data});
+        this.setState({authPwd:response[1].data});
+      this.handleResponse();
+     
+      console.log(this.state.authId);
     })
     .catch((error)=>
     {
@@ -60,7 +68,7 @@ function LoginCard(){
      
 }
 
-    return(
+    render(){return(
       <div>
       <div style={
         {
@@ -86,12 +94,11 @@ function LoginCard(){
               <AccountCircle />
             </Grid>
             <Grid item>
-              <TextField id="input-with-icon-grid" required label="UserID" value={userID} onChange={(e)=>IdHandler(e)} />
+              <TextField id="input-with-icon-grid" required label="UserID" value={this.state.userID} onChange={this.IdHandler} />
             </Grid>
           </Grid>
         </div>
         </CardActions>
-        <form >
         <CardActions>
          
         <div className={"form"}>
@@ -100,18 +107,17 @@ function LoginCard(){
               <LockOpenIcon />
             </Grid>
             <Grid item>
-              <TextField id="input-with-icon-grid" required label="Password" type="password"value={password} onChange={(e)=>passwordHandler(e)}/>
+              <TextField id="input-with-icon-grid" required label="Password" type="password"value={this.state.password} onChange={this.passwordHandler}/>
             </Grid>
           </Grid>
         </div>
       
         </CardActions>
         <CardActions>
-          <Button size="small" type="submit"color="primary" onClick={(e)=>handleSubmit(e)}>
+          <Button size="small" color="primary" type="submit"onClick={this.handleSubmit}>
             Log In
           </Button>
         </CardActions>
-        </form>
       </Card>
       
     <div style={
@@ -122,4 +128,5 @@ function LoginCard(){
     }><Typography>Not a user?<a href="http://localhost:3000/register">Register Here</a></Typography></div>
       </div>
     );}
-export default LoginCard;
+  }
+export default withRouter(LoginCard);

@@ -5,7 +5,7 @@ import com.example.formproject.model.UserModel;
 public interface UserService {
 List<UserModel> get();
  
- UserModel get(int id);
+ UserModel get(String id);
  
  void save(UserModel employee);
  

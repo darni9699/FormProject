@@ -31,7 +31,7 @@ public boolean checkPwd(String pwd) {
 
 @Transactional
  @Override
- public UserModel get(int id) {
+ public UserModel get(String id) {
   return employeeDao.get(id);
  }
 @Transactional

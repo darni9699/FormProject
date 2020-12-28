@@ -1,40 +1,83 @@
 import React,{useEffect,useState} from "react";
 import axios from 'axios';
+import {withRouter} from "react-router-dom";
 import { Typography } from "@material-ui/core";
 const URL="http://localhost:8080/api/userdetails/";
-function DetailsScreen({match})
+class DetailsScreen extends React.Component
 {
-    useEffect(()=>
+    constructor(props)
     {
-            console.log(match);
-    },[]);
-    const [item,setItem]=useState({});
-    const fetchItem=async()=>{
-            //axios.get(URL+match.params.id)
+        super(props);
+        this.state={
+            Id:'',
+            bGroup:'',
+            age:null,
+        }
+        axios.get(URL+props.match.params.id).then(response=>{
+            if(response.status===200)
+            {
+                this.setState({
+                    Id:response.data.patientName,
+                    bGroup:response.data.bloodGroup,
+                    age:response.data.age
+                    
+                })
+            }
+        });
     }
-        return(
+       render(){ return(
             <div>
+               
                 <Typography variant="h6" style={
                     {
                         marginLeft:"45%"
                     }
-                }>Details</Typography>
+                }>Test Report</Typography>
+                 <div style={{
+                    display:"flex",
+                }}>
                 <Typography variant="h6" style={{
                     marginLeft:"5%",
                 }}>
                     Name:
                 </Typography>
+                <Typography style={
+                    {
+                        marginTop:"0.5%",
+                        marginLeft:"1%"
+                    }}>{this.state.Id}</Typography>
+                </div>
+                <div style={{
+                    display:"flex",
+                }}>
                 <Typography variant="h6" style={{
                     marginLeft:"5%",
                 }}>
                     Age:
                 </Typography>
+                <Typography style={
+                    {
+                        marginTop:"0.5%",
+                        marginLeft:"1%"
+                    }
+                }>{this.state.age}</Typography>
+                </div>
+                <div style={{
+                    display:"flex",
+                }}>
                 <Typography variant="h6" style={{
                     marginLeft:"5%",
                 }}>
                     Blood Group:
                 </Typography>
+                <Typography style={
+                    {
+                        marginTop:"0.5%",
+                        marginLeft:"1%"
+                    } }>{this.state.bGroup}</Typography>
+                </div>
             </div>
         )
     }
-export default DetailsScreen;
+}
+export default withRouter(DetailsScreen);

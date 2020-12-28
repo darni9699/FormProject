@@ -42,10 +42,15 @@ public boolean checkPwd(String pwd) {
 }
 
 @Override
- public UserModel get(int id) {
+ public UserModel get(String id) {
   Session currSession = entityManager.unwrap(Session.class);
-  UserModel emp = currSession.get(UserModel.class, id);
-  return emp;
+  Query<UserModel> query = currSession.createQuery("from UserModel", UserModel.class);
+  List<UserModel> list = query.getResultList();
+for(int i=0;i<list.size();i++) {
+if(id.equals(list.get(i).getName()))
+return list.get(i);
+}
+return null;
  }
 @Override
  public void save(UserModel employee) {
