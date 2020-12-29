@@ -135,7 +135,7 @@ public UserModel()
 }
 public UserModel(String userid, String pwd, String patientName, Date date, String street, String city, String state,
 		String mobile, String gender, String dob, int age, String bloodGroup, String email, String fOrSName,
-		String pcrResult) {
+		String pcrResult,String bloodResult,String xRayResult) {
 	super();
 	this.userid = userid;
 	this.pwd = pwd;
@@ -152,6 +152,8 @@ public UserModel(String userid, String pwd, String patientName, Date date, Strin
 	this.email = email;
 	this.fOrSName = fOrSName;
 	this.pcrResult = pcrResult;
+	this.bloodResult=bloodResult;
+	this.xRayResult=xRayResult;
 }
 @Column
 private String pwd;
@@ -181,7 +183,25 @@ private String email;
 private String fOrSName;
 @Column(name="pcrResult")
 private String pcrResult;
+@Column(name="bloodResult")
+private String bloodResult;
+public String getBloodResult() {
+	return bloodResult;
+}
 
+public void setBloodResult(String bloodResult) {
+	this.bloodResult = bloodResult;
+}
+
+public String getxRayResult() {
+	return xRayResult;
+}
+
+public void setxRayResult(String xRayResult) {
+	this.xRayResult = xRayResult;
+}
+@Column(name="XrayResult")
+private String xRayResult;
 @Override
  public String toString() {
   return "Employee [ name=" + userid + ", password=" + pwd+ "]";

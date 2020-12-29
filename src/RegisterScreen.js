@@ -6,6 +6,21 @@ import {CardActions, Button,Card,TextField, MenuItem,Typography,FormControl,Sele
 import {MuiPickersUtilsProvider,KeyboardDatePicker} from "@material-ui/pickers";
 const REG_URL="http://localhost:8080/api/userdetails/";
 const CHECK_URL="http://localhost:8080/api/userdetails/id/";
+const gender=[{
+    value:"",
+    label:""
+},{
+    value:"Male",
+    label:"Male",
+},
+{
+    value:"Female",
+    label:"Female"
+},
+{
+    value:"Transgender",
+    label:"Transgender"
+}]
 class RegisterScreen extends React.Component
 {
     
@@ -32,6 +47,8 @@ class RegisterScreen extends React.Component
             regCurrDate:this.getCurrentDate(),
             regFSName:"",
             regDOB:new Date('2014-08-18T21:11:54'),
+            regBResult:'',
+            regXResult:'',
         }
         this.regUserIdHandler=this.regUserIdHandler.bind(this);
         this.regPassHandler=this.regPassHandler.bind(this);
@@ -67,6 +84,19 @@ class RegisterScreen extends React.Component
     {
         this.setState({regResult:"Positive"})
     }
+    if(this.state.pcrResult==="Positive"){
+    const rand1 = Math.round(Math.random());
+    const r1=rand1<=0.5?0:1;
+    if(r1===0)
+    {
+        this.setState({regBResult:"Negative",
+    regXResult:"Negative"});
+    }
+    else{
+        this.setState({regBResult:"Positive",
+    regXResult:"Positive"});
+    }
+}
             let user={
                 patientName: this.state.regFirst+" "+this.state.regLast,
                 date: this.state.regCurrDate,
@@ -83,7 +113,8 @@ fOrSName: this.state.regFSName,
 pcrResult: this.state.regResult,
 password: this.state.regPass,
 name: this.state.regUserId,
-
+bloodResult:this.state.regBResult,
+xRayResult:this.state.regXResult,
             }
             console.log("Details=>",JSON.stringify(user));
             axios.get(CHECK_URL+user.regUserId)
@@ -172,15 +203,15 @@ name: this.state.regUserId,
     {
         this.setState({regFSName:event.target.value})
     }
-    regGenderHandler=(event)=>
+    regGenderHandler=(e)=>
     {
-       this.setState({
-           //regGender:event.target.value
-       })
-    }
+       // console.log(e.target.value);
+      // this.setState({regGenderHandler:etarget})
+        }
     render()
     {
         return(
+            
             <div>
                 <Typography variant="h6" style={
                     {
@@ -322,23 +353,20 @@ name: this.state.regUserId,
                     width:"20%",
                 }
             }>Gender:</Typography>
-           <FormControl variant="outlined">
-        
-        <Select
-          labelId="demo-simple-select-outlined-label"
-          id="demo-simple-select-outlined"
-          value={this.state.regGender}
-          onChange={e=>this.regGenderHandler()}
+           <TextField
+          id="outlined-select-currency"
+          select
           label=""
+          value={this.state.regGender}
+          onChange={this.regGenderHandler}
+          variant="outlined"
         >
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
-          <MenuItem value={"Male"}>Male</MenuItem>
-          <MenuItem value={"Female"}>Female</MenuItem>
-          <MenuItem value={"TransGender"}>TransGender</MenuItem>
-        </Select>
-      </FormControl>
+          {gender.map((option) => (
+            <MenuItem key={option.value} value={option.value}>
+              {option.label}
+            </MenuItem>   ))}
+        </TextField>
+        
             <Typography style={
                 {
                     marginLeft:"10%",
